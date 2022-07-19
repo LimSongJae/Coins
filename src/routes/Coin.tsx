@@ -1,3 +1,5 @@
+import axios from "axios";
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import {
   useLocation,
@@ -139,7 +141,6 @@ interface PriceData {
 const Coin = () => {
   const [loading, setLoading] = useState(true);
   const { coinId } = useParams();
-  const location = useLocation();
   const { state } = useLocation() as RouteState;
   const [info, setInfo] = useState<InfoData>();
   const [priceInfo, setPriceInfo] = useState<PriceData>();
@@ -149,12 +150,11 @@ const Coin = () => {
   useEffect(() => {
     (async () => {
       const infoData = await (
-        await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-      ).json();
+        await axios.get(`https://api.coinpaprika.com/v1/coins/${coinId}`)
+      ).data;
       const priceData = await (
-        await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-      ).json();
-      console.log(location);
+        await axios.get(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
+      ).data;
       setInfo(infoData);
       setPriceInfo(priceData);
       setLoading(false);
@@ -163,6 +163,11 @@ const Coin = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+        </title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : info?.name}
@@ -182,8 +187,8 @@ const Coin = () => {
               <span>${info?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>{priceInfo?.quotes.USD.price.toFixed(3)}</span>
             </OverviewItem>
           </Overview>
           <Description>{info?.description}</Description>
@@ -205,7 +210,7 @@ const Coin = () => {
               <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           </Tabs>
-          <Outlet />
+          <Outlet context={{ coinId }} />
         </>
       )}
     </Container>

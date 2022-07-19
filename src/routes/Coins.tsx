@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -61,15 +63,19 @@ const Coins = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await response.json();
-      setCoins(json.slice(0, 100));
+      const data = await (
+        await axios.get("https://api.coinpaprika.com/v1/coins")
+      ).data;
+      setCoins(data.slice(0, 100));
       setLoading(false);
     })();
   }, []);
 
   return (
     <Container>
+      <Helmet>
+        <title>코인</title>
+      </Helmet>
       <Header>
         <Title>코인</Title>
       </Header>
