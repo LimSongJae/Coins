@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ApexChart from "react-apexcharts";
 import { useOutletContext } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atom";
 
 export interface CharProps {
   coinId: string;
@@ -19,6 +21,7 @@ export interface ICoin {
 }
 
 const Chart = () => {
+  const isDark = useRecoilValue(isDarkAtom);
   const { coinId } = useOutletContext<CharProps>();
   const [loading, setLoading] = useState(true);
   const [coinData, setCoinData] = useState<ICoin[]>();
@@ -80,7 +83,7 @@ const Chart = () => {
             },
             yaxis: { show: false },
             theme: {
-              mode: "dark",
+              mode: isDark ? "dark" : "light",
             },
           }}
         />

@@ -2,7 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { isDarkAtom } from "../atom";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -60,7 +62,7 @@ export interface CoinInterface {
 const Coins = () => {
   const [coins, setCoins] = useState<CoinInterface[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const setterFn = useSetRecoilState(isDarkAtom);
   useEffect(() => {
     (async () => {
       const data = await (
@@ -78,6 +80,7 @@ const Coins = () => {
       </Helmet>
       <Header>
         <Title>코인</Title>
+        <button onClick={() => setterFn((prev) => !prev)}>Toggle Mode</button>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
