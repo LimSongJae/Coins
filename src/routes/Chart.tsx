@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import ApexChart from "react-apexcharts";
 import { useOutletContext } from "react-router-dom";
 
-interface CharProps {
+export interface CharProps {
   coinId: string;
 }
 
-interface ICoin {
+export interface ICoin {
   close: string;
   high: string;
   low: string;
@@ -35,7 +35,7 @@ const Chart = () => {
   }, [coinId]);
 
   return (
-    <div>
+    <>
       {loading ? (
         "Loading chart..."
       ) : (
@@ -59,17 +59,6 @@ const Chart = () => {
             grid: {
               show: false,
             },
-            xaxis: {
-              axisTicks: { show: false },
-              labels: { show: false },
-              axisBorder: { show: false },
-              categories: coinData?.map((price) => price.time_close),
-              type: "datetime",
-            },
-            yaxis: { show: false },
-            theme: {
-              mode: "dark",
-            },
             fill: {
               type: "gradient",
               gradient: { gradientToColors: ["blue"], stops: [0, 100] },
@@ -82,10 +71,21 @@ const Chart = () => {
             tooltip: {
               y: { formatter: (value) => `$ ${value.toFixed(3)}` },
             },
+            xaxis: {
+              axisTicks: { show: false },
+              labels: { show: false },
+              axisBorder: { show: false },
+              categories: coinData?.map((price) => price.time_close),
+              type: "datetime",
+            },
+            yaxis: { show: false },
+            theme: {
+              mode: "dark",
+            },
           }}
         />
       )}
-    </div>
+    </>
   );
 };
 
